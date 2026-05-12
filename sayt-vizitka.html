@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Vizitka Muharriri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F5F3EE;
+    --surface: #FFFFFF;
+    --border: rgba(0,0,0,0.08);
+    --text: #1A1A18;
+    --muted: #6B6B68;
+    --accent: #534AB7;
+    --accent-light: #EEEDFE;
+    --accent-dark: #3C3489;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px;
+    -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(26px, 6vw, 32px);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+  }
+
+  .panel-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .field { margin-bottom: 14px; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+
+  input[type="text"], input[type="email"], input[type="tel"] {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input:focus { border-color: var(--accent); }
+
+  .theme-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .theme-btn {
+    min-height: 42px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    touch-action: manipulation;
+  }
+
+  .theme-btn:hover { transform: scale(1.03); }
+  .theme-btn.active { border-color: var(--text); }
+
+  .divider { height: 1px; background: var(--border); margin: 18px 0; }
+
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    min-height: 44px;
+    border-radius: 12px;
+    padding: 11px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .btn-primary {
+    background: var(--text);
+    color: #fff;
+    border: none;
+    font-weight: 500;
+    transition: opacity 0.2s, transform 0.15s;
+    margin-bottom: 8px;
+  }
+
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-primary:active { transform: scale(0.98); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    font-weight: 400;
+    transition: background 0.2s;
+  }
+
+  .btn-secondary:hover { background: var(--bg); }
+
+  .preview-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .preview-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .card-stage {
+    background: #E8E4DD;
+    border-radius: 24px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-stage::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.06) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+
+  .bizcard {
+    width: min(340px, 100%);
+    background: var(--surface);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    animation: float 6s ease-in-out infinite;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06);
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(-1deg); }
+    50% { transform: translateY(-8px) rotate(-1deg); }
+  }
+
+  .bizcard-top {
+    padding: 24px 24px 20px;
+    position: relative;
+  }
+
+  .bizcard-stripe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: var(--accent);
+    transition: background 0.4s;
+  }
+
+  .bizcard-monogram {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--accent-dark);
+    margin-bottom: 14px;
+    margin-top: 14px;
+    transition: background 0.4s, color 0.4s;
+    font-family: 'DM Serif Display', serif;
+    letter-spacing: 0.02em;
+  }
+
+  .bizcard-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+
+  .bizcard-role {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 2px;
+    word-break: break-word;
+  }
+
+  .bizcard-company {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent);
+    transition: color 0.4s;
+    word-break: break-word;
+  }
+
+  .bizcard-bottom {
+    padding: 16px 24px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .bizcard-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    min-width: 0;
+  }
+
+  .bizcard-row .icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.4s;
+  }
+
+  .bizcard-row .icon svg {
+    width: 13px;
+    height: 13px;
+    stroke: var(--accent);
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.4s;
+  }
+
+  .bizcard-row span {
+    color: var(--text);
+    font-size: 12px;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+
+    .card-stage {
+      min-height: 280px;
+      padding: 18px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    body {
+      padding: 14px;
+    }
+
+    .panel {
+      padding: 16px;
+      border-radius: 16px;
+    }
+
+    .theme-group {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .bizcard-top {
+      padding: 20px 18px 16px;
+    }
+
+    .bizcard-bottom {
+      padding: 14px 18px 16px;
+    }
+
+    .bizcard-name {
+      font-size: 20px;
+    }
+
+    .card-stage {
+      border-radius: 18px;
+      min-height: 260px;
+      padding: 14px;
+    }
+  }
+
+  @media (max-width: 420px) {
+    body {
+      padding: 12px;
+    }
+
+    .subtitle {
+      margin-bottom: 18px;
+    }
+
+    .panel {
+      padding: 14px;
+    }
+
+    .theme-group {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .bizcard {
+      width: 100%;
+    }
+
+    .bizcard-row {
+      gap: 8px;
+    }
+
+    .bizcard-row span {
+      font-size: 11px;
+    }
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .layout { grid-template-columns: 1fr; }
+    .panel, .preview-label, .card-stage { display: none; }
+    .preview-wrap { display: block; }
+    .bizcard {
+      animation: none !important;
+      box-shadow: none !important;
+      transform: none !important;
+      width: 85.6mm;
+      height: 53.98mm;
+      border-radius: 3.5mm;
+      border: 0.5px solid #ddd;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div style="max-width:1100px; margin:0 auto;">
+  <h1>Vizitka muharriri</h1>
+  <p class="subtitle">Ma'lumotlaringizni kiriting — vizitka real vaqtda yangilanadi</p>
+</div>
+
+<div class="layout">
+  <div class="panel">
+    <p class="panel-title">Ma'lumotlar</p>
+
+    <div class="field">
+      <label>To'liq ism</label>
+      <input type="text" id="f-name" value="Jasur Toshmatov" oninput="sync()">
+    </div>
+    <div class="field">
+      <label>Lavozim</label>
+      <input type="text" id="f-role" value="Full-stack Dasturchi" oninput="sync()">
+    </div>
+    <div class="field">
+      <label>Kompaniya</label>
+      <input type="text" id="f-company" value="TechUz Solutions" oninput="sync()">
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label>Telefon</label>
+      <input type="tel" id="f-phone" value="+998 90 123 45 67" oninput="sync()">
+    </div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="f-email" value="jasur@techuz.uz" oninput="sync()">
+    </div>
+    <div class="field">
+      <label>Veb-sayt</label>
+      <input type="text" id="f-web" value="techuz.uz" oninput="sync()">
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label>Rang uslubi</label>
+      <div class="theme-group">
+        <button class="theme-btn active" data-theme="purple" style="background:#534AB7; color:#fff;" onclick="setTheme('purple', this)">Binafsha</button>
+        <button class="theme-btn" data-theme="teal" style="background:#0F6E56; color:#fff;" onclick="setTheme('teal', this)">Teol</button>
+        <button class="theme-btn" data-theme="coral" style="background:#993C1D; color:#fff;" onclick="setTheme('coral', this)">Marjon</button>
+        <button class="theme-btn" data-theme="slate" style="background:#3D3D3A; color:#fff;" onclick="setTheme('slate', this)">Qora</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <button class="btn-primary" onclick="window.print()">&#128438; Chop etish / PDF saqlash</button>
+    <button class="btn-secondary" onclick="downloadHTML()">&#8681; HTML yuklab olish</button>
+  </div>
+
+  <div class="preview-wrap">
+    <p class="preview-label">Ko'rinishi</p>
+    <div class="card-stage">
+      <div class="bizcard" id="bizcard">
+        <div class="bizcard-stripe" id="vc-stripe"></div>
+        <div class="bizcard-top">
+          <div class="bizcard-monogram" id="vc-mono">JT</div>
+          <p class="bizcard-name" id="vc-name">Jasur Toshmatov</p>
+          <p class="bizcard-role" id="vc-role">Full-stack Dasturchi</p>
+          <p class="bizcard-company" id="vc-company">TechUz Solutions</p>
+        </div>
+        <div class="bizcard-bottom">
+          <div class="bizcard-row">
+            <div class="icon" id="icon-phone">
+              <svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 014 6a2 2 0 011-2z"/></svg>
+            </div>
+            <span id="vc-phone">+998 90 123 45 67</span>
+          </div>
+          <div class="bizcard-row">
+            <div class="icon" id="icon-mail">
+              <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+            </div>
+            <span id="vc-email">jasur@techuz.uz</span>
+          </div>
+          <div class="bizcard-row">
+            <div class="icon" id="icon-web">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+            </div>
+            <span id="vc-web">techuz.uz</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:12px; color:var(--muted); text-align:center; line-height:1.6;">
+      Vizitka o'lchami: 85.6 × 54 mm (standart)<br>
+      "Chop etish" tugmasini bosib PDF sifatida saqlang
+    </div>
+  </div>
+</div>
+
+<script>
+const themes = {
+  purple: { accent:'#534AB7', light:'#EEEDFE', dark:'#3C3489' },
+  teal:   { accent:'#0F6E56', light:'#E1F5EE', dark:'#085041' },
+  coral:  { accent:'#993C1D', light:'#FAECE7', dark:'#712B13' },
+  slate:  { accent:'#3D3D3A', light:'#F1EFE8', dark:'#2C2C2A' },
+};
+
+let currentTheme = themes.purple;
+
+function initials(name) {
+  return name.trim().split(/\s+/).map(w => w[0] || '').slice(0, 2).join('').toUpperCase() || '??';
+}
+
+function sync() {
+  const name = document.getElementById('f-name').value;
+  const role = document.getElementById('f-role').value;
+  const company = document.getElementById('f-company').value;
+  const phone = document.getElementById('f-phone').value;
+  const email = document.getElementById('f-email').value;
+  const web = document.getElementById('f-web').value;
+
+  document.getElementById('vc-name').textContent = name || '—';
+  document.getElementById('vc-role').textContent = role;
+  document.getElementById('vc-company').textContent = company;
+  document.getElementById('vc-phone').textContent = phone;
+  document.getElementById('vc-email').textContent = email;
+  document.getElementById('vc-web').textContent = web;
+  document.getElementById('vc-mono').textContent = initials(name);
+}
+
+function applyTheme(t) {
+  const root = document.documentElement;
+  root.style.setProperty('--accent', t.accent);
+  root.style.setProperty('--accent-light', t.light);
+  root.style.setProperty('--accent-dark', t.dark);
+}
+
+function setTheme(name, btn) {
+  currentTheme = themes[name];
+  applyTheme(currentTheme);
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function downloadHTML() {
+  const html = document.documentElement.outerHTML;
+  const blob = new Blob([html], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'vizitka.html';
+  a.click();
+}
+
+sync();
+</script>
+</body>
+</html>
