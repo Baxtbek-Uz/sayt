@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduSpace</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+background:#020617;
+color:white;
+overflow-x:hidden;
+}
+
+body.light{
+background:#f8fafc;
+color:#020617;
+}
+
+header{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+padding:18px 7%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(2,6,23,.88);
+backdrop-filter:blur(12px);
+z-index:1000;
+border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+body.light header{
+background:rgba(255,255,255,.9);
+}
+
+.logo{
+font-size:28px;
+font-weight:800;
+letter-spacing:-1px;
+}
+
+.logo span{
+color:#3b82f6;
+}
+
+nav{
+display:flex;
+align-items:center;
+gap:26px;
+}
+
+nav a{
+text-decoration:none;
+color:white;
+font-size:15px;
+transition:.3s;
+}
+
+body.light nav a{
+color:#020617;
+}
+
+nav a:hover{
+color:#60a5fa;
+}
+
+.right{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.theme-btn{
+width:42px;
+height:42px;
+border-radius:50%;
+border:none;
+background:#111827;
+color:white;
+cursor:pointer;
+font-size:17px;
+}
+
+body.light .theme-btn{
+background:#e2e8f0;
+color:#020617;
+}
+
+.menu{
+display:none;
+font-size:30px;
+cursor:pointer;
+}
+
+.hero{
+display:grid;
+grid-template-columns:1.1fr .9fr;
+gap:70px;
+align-items:center;
+padding:140px 7% 90px;
+min-height:100vh;
+}
+
+.small-tag{
+background:#172554;
+padding:8px 14px;
+border-radius:999px;
+font-size:13px;
+display:inline-block;
+color:#93c5fd;
+}
+
+body.light .small-tag{
+background:#dbeafe;
+color:#1d4ed8;
+}
+
+.hero-left h1{
+font-size:58px;
+line-height:1.05;
+max-width:650px;
+margin:18px 0;
+letter-spacing:-2px;
+}
+
+.hero-left p{
+font-size:17px;
+line-height:1.8;
+color:#94a3b8;
+max-width:540px;
+margin-bottom:30px;
+}
+
+body.light .hero-left p{
+color:#475569;
+}
+
+.hero-buttons{
+display:flex;
+gap:14px;
+flex-wrap:wrap;
+}
+
+.btn{
+padding:15px 24px;
+border:none;
+border-radius:14px;
+font-size:15px;
+font-weight:600;
+cursor:pointer;
+transition:.3s;
+}
+
+.primary{
+background:#2563eb;
+color:white;
+}
+
+.primary:hover{
+transform:translateY(-4px);
+background:#1d4ed8;
+}
+
+.secondary{
+background:#111827;
+color:white;
+border:1px solid rgba(255,255,255,.08);
+}
+
+.secondary:hover{
+background:#1e293b;
+}
+
+.hero-users{
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:28px;
+flex-wrap:wrap;
+}
+
+.user-bubble{
+width:42px;
+height:42px;
+border-radius:50%;
+background:#1e293b;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+border:2px solid #020617;
+margin-left:-10px;
+}
+
+body.light .user-bubble{
+border-color:white;
+}
+
+.hero-users p{
+font-size:14px;
+color:#94a3b8;
+margin-left:10px;
+}
+
+.hero-right{
+display:flex;
+justify-content:center;
+}
+
+.real-card{
+background:#0f172a;
+border:1px solid rgba(255,255,255,.06);
+padding:24px;
+border-radius:24px;
+max-width:420px;
+width:100%;
+transform:rotate(-2deg);
+box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+
+body.light .real-card{
+background:white;
+}
+
+.real-top{
+display:flex;
+justify-content:space-between;
+font-size:13px;
+color:#94a3b8;
+margin-bottom:20px;
+}
+
+.real-card h3{
+font-size:28px;
+line-height:1.2;
+margin-bottom:12px;
+}
+
+.video-preview{
+height:220px;
+border-radius:18px;
+background:#1e293b;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:32px;
+margin:20px 0;
+}
+
+body.light .video-preview{
+background:#e2e8f0;
+}
+
+.real-bottom{
+display:flex;
+justify-content:space-between;
+margin-top:10px;
+}
+
+.mini-label{
+font-size:12px;
+color:#94a3b8;
+margin-bottom:5px;
+}
+
+.stats,
+.courses,
+.testimonials,
+.contact{
+padding:90px 7%;
+}
+
+.title{
+font-size:42px;
+margin-bottom:50px;
+font-weight:800;
+letter-spacing:-1px;
+}
+
+.stats-grid,
+.course-grid,
+.review-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:24px;
+}
+
+.stat-box,
+.course-card,
+.review{
+background:#0f172a;
+padding:28px;
+border-radius:24px;
+border:1px solid rgba(255,255,255,.05);
+transition:.3s;
+}
+
+body.light .stat-box,
+body.light .course-card,
+body.light .review{
+background:white;
+}
+
+.stat-box:hover,
+.course-card:hover,
+.review:hover{
+transform:translateY(-6px);
+}
+
+.stat-box h2{
+font-size:44px;
+margin-bottom:10px;
+color:#60a5fa;
+}
+
+.course-icon{
+height:180px;
+border-radius:18px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:58px;
+background:#172554;
+margin-bottom:20px;
+}
+
+body.light .course-icon{
+background:#dbeafe;
+}
+
+.course-card h3{
+font-size:24px;
+margin-bottom:12px;
+}
+
+.course-card p{
+color:#94a3b8;
+line-height:1.7;
+margin-bottom:20px;
+}
+
+.review p{
+line-height:1.8;
+color:#94a3b8;
+margin-bottom:18px;
+}
+
+.review-user{
+display:flex;
+align-items:center;
+gap:14px;
+}
+
+.avatar{
+width:46px;
+height:46px;
+border-radius:50%;
+background:#2563eb;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+}
+
+.contact-form{
+max-width:700px;
+display:flex;
+flex-direction:column;
+gap:18px;
+}
+
+.contact-form input,
+.contact-form textarea{
+padding:16px;
+border:none;
+outline:none;
+border-radius:16px;
+background:#0f172a;
+color:white;
+font-size:15px;
+}
+
+body.light .contact-form input,
+body.light .contact-form textarea{
+background:white;
+color:#020617;
+}
+
+.contact-form textarea{
+height:180px;
+resize:none;
+}
+
+footer{
+padding:35px 20px;
+text-align:center;
+color:#94a3b8;
+border-top:1px solid rgba(255,255,255,.05);
+}
+
+.popup{
+position:fixed;
+top:20px;
+right:-400px;
+background:#2563eb;
+padding:15px 24px;
+border-radius:14px;
+transition:.4s;
+z-index:2000;
+}
+
+.popup.show{
+right:20px;
+}
+
+@media(max-width:992px){
+
+header{
+padding:18px 5%;
+}
+
+.hero,
+.stats,
+.courses,
+.testimonials,
+.contact{
+padding-left:5%;
+padding-right:5%;
+}
+
+.hero{
+grid-template-columns:1fr;
+padding-top:120px;
+gap:50px;
+}
+
+.hero-left{
+text-align:center;
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+.hero-left h1{
+font-size:46px;
+}
+
+.hero-users{
+justify-content:center;
+}
+
+nav{
+position:fixed;
+top:78px;
+right:-100%;
+background:#0f172a;
+width:240px;
+padding:24px;
+border-radius:22px;
+display:flex;
+flex-direction:column;
+transition:.4s;
+}
+
+body.light nav{
+background:white;
+}
+
+nav.active{
+right:20px;
+}
+
+.menu{
+display:block;
+}
+
+}
+
+@media(max-width:768px){
+
+.hero-left h1{
+font-size:38px;
+}
+
+.hero-left p{
+font-size:16px;
+}
+
+.hero-buttons{
+width:100%;
+flex-direction:column;
+}
+
+.btn{
+width:100%;
+}
+
+.title{
+font-size:34px;
+}
+
+.stats,
+.courses,
+.testimonials,
+.contact{
+padding-top:70px;
+padding-bottom:70px;
+}
+
+.video-preview{
+height:180px;
+}
+
+}
+
+@media(max-width:480px){
+
+header{
+padding:16px 4%;
+}
+
+.logo{
+font-size:24px;
+}
+
+.hero,
+.stats,
+.courses,
+.testimonials,
+.contact{
+padding-left:4%;
+padding-right:4%;
+}
+
+.hero-left h1{
+font-size:32px;
+}
+
+.title{
+font-size:28px;
+}
+
+.real-card{
+padding:18px;
+}
+
+.video-preview{
+height:150px;
+font-size:24px;
+}
+
+.course-icon{
+height:140px;
+font-size:46px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="popup" id="popup">
+Message sent successfully
+</div>
+
+<header>
+
+<div class="logo">
+Edu<span>Space</span>
+</div>
+
+<nav id="nav">
+<a href="#home">Home</a>
+<a href="#stats">Stats</a>
+<a href="#courses">Courses</a>
+<a href="#reviews">Reviews</a>
+<a href="#contact">Contact</a>
+</nav>
+
+<div class="right">
+
+<button class="theme-btn" id="themeBtn">
+🌙
+</button>
+
+<div class="menu" id="menu">
+☰
+</div>
+
+</div>
+
+</header>
+
+<section class="hero" id="home">
+
+<div class="hero-left">
+
+<span class="small-tag">
+Trusted by students in Uzbekistan
+</span>
+
+<h1>
+Courses that actually help you build real projects.
+</h1>
+
+<p>
+Frontend, mobile and UI/UX lessons made for beginners.
+No boring theory — mostly practice and examples.
+</p>
+
+<div class="hero-buttons">
+<button class="btn primary">
+Browse Courses
+</button>
+
+<button class="btn secondary">
+See Student Works
+</button>
+</div>
+
+<div class="hero-users">
+
+<div class="user-bubble">A</div>
+<div class="user-bubble">S</div>
+<div class="user-bubble">J</div>
+
+<p>
+1,200+ active students this month
+</p>
+
+</div>
+
+</div>
+
+<div class="hero-right">
+
+<div class="real-card">
+
+<div class="real-top">
+<span>Recently uploaded</span>
+<span>2h ago</span>
+</div>
+
+<h3>
+Building a responsive navbar
+</h3>
+
+<div class="video-preview">
+▶ 12:43
+</div>
+
+<div class="real-bottom">
+
+<div>
+<p class="mini-label">Teacher</p>
+<h4>Aziz Dev</h4>
+</div>
+
+<div>
+<p class="mini-label">Level</p>
+<h4>Beginner</h4>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="stats" id="stats">
+
+<h2 class="title">
+Platform Stats
+</h2>
+
+<div class="stats-grid">
+
+<div class="stat-box">
+<h2 data-target="1200">0</h2>
+<p>Active Students</p>
+</div>
+
+<div class="stat-box">
+<h2 data-target="48">0</h2>
+<p>Courses</p>
+</div>
+
+<div class="stat-box">
+<h2 data-target="92">0</h2>
+<p>Completion Rate</p>
+</div>
+
+</div>
+
+</section>
+
+<section class="courses" id="courses">
+
+<h2 class="title">
+Popular Courses
+</h2>
+
+<div class="course-grid">
+
+<div class="course-card">
+
+<div class="course-icon">
+💻
+</div>
+
+<h3>Frontend Basics</h3>
+
+<p>
+Learn responsive websites using HTML CSS and JavaScript.
+</p>
+
+<button class="btn primary">
+Start Learning
+</button>
+
+</div>
+
+<div class="course-card">
+
+<div class="course-icon">
+🎨
+</div>
+
+<h3>UI/UX Design</h3>
+
+<p>
+Design modern interfaces and mobile-friendly layouts.
+</p>
+
+<button class="btn primary">
+Start Learning
+</button>
+
+</div>
+
+<div class="course-card">
+
+<div class="course-icon">
+📱
+</div>
+
+<h3>Mobile Apps</h3>
+
+<p>
+Create Android and iOS app interfaces from scratch.
+</p>
+
+<button class="btn primary">
+Start Learning
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="testimonials" id="reviews">
+
+<h2 class="title">
+Student Reviews
+</h2>
+
+<div class="review-grid">
+
+<div class="review">
+
+<p>
+I started with zero experience and now I build websites for local clients.
+</p>
+
+<div class="review-user">
+
+<div class="avatar">
+A
+</div>
+
+<div>
+<h4>Ali</h4>
+<span>Frontend Student</span>
+</div>
+
+</div>
+
+</div>
+
+<div class="review">
+
+<p>
+The lessons feel practical and not overcomplicated like most online courses.
+</p>
+
+<div class="review-user">
+
+<div class="avatar">
+S
+</div>
+
+<div>
+<h4>Sarah</h4>
+<span>UI Designer</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="contact" id="contact">
+
+<h2 class="title">
+Contact
+</h2>
+
+<form class="contact-form" id="contactForm">
+
+<input type="text" placeholder="Your name" required>
+
+<input type="email" placeholder="Your email" required>
+
+<textarea placeholder="Message"></textarea>
+
+<button class="btn primary" type="submit">
+Send Message
+</button>
+
+</form>
+
+</section>
+
+<footer>
+© 2026 EduSpace
+</footer>
+
+<script>
+
+const menu = document.getElementById('menu');
+const nav = document.getElementById('nav');
+
+menu.onclick = () => {
+nav.classList.toggle('active');
+};
+
+const themeBtn = document.getElementById('themeBtn');
+
+themeBtn.onclick = () => {
+
+document.body.classList.toggle('light');
+
+if(document.body.classList.contains('light')){
+themeBtn.innerHTML = '☀️';
+}else{
+themeBtn.innerHTML = '🌙';
+}
+
+};
+
+const counters = document.querySelectorAll('[data-target]');
+
+counters.forEach(counter=>{
+
+const update = ()=>{
+
+const target = +counter.getAttribute('data-target');
+const count = +counter.innerText;
+const increment = target / 100;
+
+if(count < target){
+
+counter.innerText = Math.ceil(count + increment);
+
+setTimeout(update,20);
+
+}else{
+
+counter.innerText = target;
+
+}
+
+};
+
+update();
+
+});
+
+const form = document.getElementById('contactForm');
+const popup = document.getElementById('popup');
+
+form.addEventListener('submit',(e)=>{
+
+e.preventDefault();
+
+popup.classList.add('show');
+
+setTimeout(()=>{
+popup.classList.remove('show');
+},2500);
+
+form.reset();
+
+});
+
+</script>
+
+</body>
+</html>
