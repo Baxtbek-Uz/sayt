@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online do'kon • Premium Store</title>
+
+  <style>
+    :root{
+      --bg0:#030712;
+      --bg1:#020617;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.10);
+      --stroke:rgba(255,255,255,.14);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.70);
+      --muted2:rgba(255,255,255,.55);
+      --a:#38bdf8;
+      --b:#22c55e;
+      --c:#a78bfa;
+      --d:#fb7185;
+      --shadow: 0 20px 70px rgba(56,189,248,.22);
+      --radius: 22px;
+    }
+
+    *{margin:0; padding:0; box-sizing:border-box; font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;}
+    html{scroll-behavior:smooth;}
+    body{
+      color:var(--text);
+      background: radial-gradient(1200px 700px at 15% 20%, rgba(56,189,248,.18), transparent 60%),
+                  radial-gradient(900px 600px at 90% 10%, rgba(167,139,250,.16), transparent 55%),
+                  radial-gradient(900px 600px at 80% 90%, rgba(251,113,133,.12), transparent 55%),
+                  linear-gradient(180deg, var(--bg1), var(--bg0));
+      overflow-x:hidden;
+      min-height:100vh;
+    }
+
+    /* Backdrops */
+    .video-bg{
+      position:fixed; inset:0;
+      width:100%; height:100%;
+      object-fit:cover;
+      filter:saturate(1.1) contrast(1.05) brightness(.75);
+      z-index:-3;
+    }
+    body::after{
+      content:"";
+      position:fixed; inset:0;
+      background:linear-gradient(180deg, rgba(2,6,23,.75), rgba(2,6,23,.95));
+      z-index:-2;
+    }
+
+    .grid{
+      position:fixed; inset:-2px;
+      background-image:
+        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size: 70px 70px;
+      transform: translateZ(0);
+      mask-image: radial-gradient(circle at 50% 30%, rgba(0,0,0,1) 0%, rgba(0,0,0,.2) 55%, rgba(0,0,0,0) 75%);
+      opacity:.55;
+      z-index:-1;
+    }
+
+    /* Cursor glow */
+    .cursor-light{
+      position:fixed;
+      width:220px; height:220px;
+      background:radial-gradient(circle, rgba(56,189,248,.22), transparent 65%);
+      pointer-events:none;
+      border-radius:50%;
+      transform:translate(-50%,-50%);
+      z-index:-1;
+      transition: opacity .2s ease;
+      opacity:.9;
+    }
+
+    /* Layout */
+    .container{width:min(1200px, 92vw); margin:0 auto;}
+
+    header{
+      position:sticky; top:0;
+      z-index:50;
+      backdrop-filter: blur(16px);
+      background: rgba(2,6,23,.55);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:14px 0;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      min-width: 210px;
+    }
+
+    .logo{
+      width:40px; height:40px;
+      border-radius:14px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 45%),
+                  linear-gradient(135deg, rgba(56,189,248,.95), rgba(167,139,250,.85));
+      box-shadow: 0 14px 45px rgba(56,189,248,.25);
+      position:relative;
+      overflow:hidden;
+    }
+    .logo::after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: conic-gradient(from 180deg, rgba(255,255,255,.0), rgba(255,255,255,.35), rgba(255,255,255,0));
+      animation: spin 5s linear infinite;
+      opacity:.6;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    .brand h1{
+      font-size:18px;
+      letter-spacing:.2px;
+      line-height:1.1;
+      display:flex; flex-direction:column;
+    }
+    .brand h1 span{font-size:12px; color:var(--muted2); font-weight:600; margin-top:2px;}
+
+    nav{
+      display:flex; align-items:center; gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    nav a{
+      text-decoration:none;
+      padding:10px 12px;
+      border-radius:14px;
+      color:rgba(255,255,255,.78);
+      border:1px solid transparent;
+      transition:.2s ease;
+      font-size:14px;
+      font-weight:600;
+      letter-spacing:.1px;
+    }
+
+    nav a:hover{
+      border-color: rgba(56,189,248,.35);
+      background: rgba(56,189,248,.10);
+      color:rgba(255,255,255,.95);
+      transform: translateY(-1px);
+    }
+
+    .nav-cta{
+      background: linear-gradient(135deg, rgba(56,189,248,.95), rgba(167,139,250,.75));
+      color:#04111f !important;
+      box-shadow: 0 18px 55px rgba(56,189,248,.22);
+      border-color: rgba(255,255,255,.12) !important;
+    }
+
+    /* Hero */
+    .hero{
+      padding: 48px 0 26px;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 900px){
+      .hero-grid{grid-template-columns: 1fr;}
+      .brand{min-width: unset;}
+    }
+
+    .hero-card{
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .hero-card::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(600px 240px at 20% 20%, rgba(56,189,248,.35), transparent 60%),
+                  radial-gradient(500px 220px at 85% 35%, rgba(167,139,250,.22), transparent 58%),
+                  radial-gradient(500px 240px at 40% 95%, rgba(251,113,133,.16), transparent 60%);
+      opacity: .95;
+      pointer-events:none;
+    }
+
+    .hero-inner{
+      position:relative;
+      padding: 28px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:9px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.82);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing:.2px;
+    }
+
+    .pill b{color:#dbeafe;}
+
+    .hero h2{
+      margin-top: 16px;
+      font-size: clamp(30px, 4.2vw, 56px);
+      line-height: 1.05;
+      letter-spacing: -0.6px;
+    }
+
+    .hero p{
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: clamp(14px, 1.6vw, 18px);
+      line-height: 1.7;
+      max-width: 56ch;
+    }
+
+    .hero-actions{
+      margin-top: 18px;
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+      align-items:center;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding: 12px 16px;
+      border-radius: 16px;
+      text-decoration:none;
+      font-weight: 800;
+      letter-spacing:.2px;
+      border: 1px solid rgba(255,255,255,.12);
+      transition: .2s ease;
+      user-select:none;
+    }
+
+    .btn-primary{
+      background: linear-gradient(135deg, rgba(56,189,248,.95), rgba(167,139,250,.75));
+      color:#04111f;
+      box-shadow: 0 18px 60px rgba(56,189,248,.24);
+    }
+
+    .btn-primary:hover{transform: translateY(-2px); box-shadow: 0 26px 80px rgba(56,189,248,.26);}
+
+    .btn-ghost{
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.90);
+    }
+    .btn-ghost:hover{transform: translateY(-2px); background: rgba(56,189,248,.10); border-color: rgba(56,189,248,.35);}
+
+    .hero-stats{
+      margin-top: 18px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+    }
+    @media (max-width: 520px){.hero-stats{grid-template-columns:1fr;}}
+
+    .stat{
+      border-radius: 18px;
+      padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      backdrop-filter: blur(14px);
+    }
+    .stat b{font-size:18px; display:block;}
+    .stat span{font-size:12px; color:var(--muted2); font-weight:700;}
+
+    /* Side card */
+    .side{
+      display:flex;
+      flex-direction:column;
+      gap: 14px;
+    }
+
+    .side-card{
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      backdrop-filter: blur(16px);
+      padding: 18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .side-card::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background: radial-gradient(420px 180px at 10% 0%, rgba(56,189,248,.24), transparent 60%),
+                  radial-gradient(420px 180px at 90% 20%, rgba(251,113,133,.16), transparent 58%);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .side-card > *{position:relative;}
+
+    .side-card h3{font-size:16px; letter-spacing:.2px;}
+    .side-card p{margin-top:8px; color:var(--muted); font-size:13px; line-height:1.6;}
+
+    .quick{
+      display:flex; flex-direction:column; gap:10px; margin-top: 12px;
+    }
+
+    .qitem{
+      display:flex; gap:12px; align-items:center;
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.10);
+    }
+    .qdot{
+      width:40px; height:40px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(56,189,248,.85), rgba(167,139,250,.65));
+      box-shadow: 0 18px 55px rgba(56,189,248,.18);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:900;
+      color:#04111f;
+    }
+    .qtext b{display:block; font-size:13px;}
+    .qtext span{display:block; font-size:12px; color:var(--muted2); margin-top:2px;}
+
+    /* Sections */
+    section{padding: 18px 0;}
+
+    .section-title{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap: 14px;
+      margin: 16px 0 14px;
+    }
+    .section-title h3{font-size:18px; letter-spacing:.2px;}
+    .section-title p{color:var(--muted2); font-size:13px; font-weight:700;}
+
+    .cards-grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+    }
+
+    .col-4{grid-column: span 4;}
+    .col-6{grid-column: span 6;}
+    .col-8{grid-column: span 8;}
+    .col-12{grid-column: span 12;}
+
+    @media (max-width: 980px){.col-4{grid-column: span 6;}.col-6{grid-column: span 12;}.col-8{grid-column: span 12;}}
+    @media (max-width: 560px){.col-4{grid-column: span 12;}}
+
+    .card{
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      backdrop-filter: blur(16px);
+      padding: 14px;
+      position:relative;
+      overflow:hidden;
+      transition: .22s ease;
+      min-height: 220px;
+    }
+    .card:hover{
+      transform: translateY(-6px);
+      border-color: rgba(56,189,248,.35);
+      box-shadow: 0 28px 90px rgba(56,189,248,.18);
+    }
+
+    .card::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(380px 200px at 15% 0%, rgba(56,189,248,.25), transparent 60%),
+                  radial-gradient(340px 180px at 90% 20%, rgba(167,139,250,.18), transparent 60%);
+      opacity:.0;
+      transition:.22s ease;
+      pointer-events:none;
+    }
+    .card:hover::after{opacity:1;}
+
+    .card > *{position:relative;}
+
+    .thumb{
+      height: 130px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+      background: rgba(0,0,0,.12);
+      position:relative;
+    }
+    .thumb img{width:100%; height:100%; object-fit:cover; transform: scale(1.02); filter:saturate(1.05) contrast(1.05);}
+    .badge{
+      position:absolute;
+      top:10px; left:10px;
+      background: rgba(56,189,248,.16);
+      border: 1px solid rgba(56,189,248,.35);
+      color: rgba(220,252,255,.95);
+      font-weight:900;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .card h4{margin-top: 12px; font-size:16px; letter-spacing:.2px;}
+    .price{margin-top: 6px; color: rgba(255,255,255,.92); font-weight: 950; font-size: 18px;}
+    .meta{margin-top: 6px; color: var(--muted2); font-size: 13px; font-weight: 700; line-height:1.5;}
+
+    .card-actions{margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+
+    .mini-btn{
+      padding: 10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.9);
+      text-decoration:none;
+      font-weight: 900;
+      font-size: 13px;
+      transition:.2s ease;
+    }
+    .mini-btn:hover{transform: translateY(-2px); border-color: rgba(56,189,248,.35); background: rgba(56,189,248,.10)}
+
+    .mini-buy{
+      background: linear-gradient(135deg, rgba(56,189,248,.95), rgba(34,197,94,.65));
+      color:#031b10;
+      box-shadow: 0 18px 55px rgba(34,197,94,.12);
+      border-color: rgba(255,255,255,.14);
+    }
+
+    /* Reviews */
+    .review{
+      min-height: 190px;
+    }
+    .stars{color: #fbbf24; font-weight:900; letter-spacing:2px;}
+
+    /* FAQ */
+    details{
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      padding: 14px 16px;
+      transition:.2s ease;
+    }
+    details[open]{border-color: rgba(56,189,248,.35); background: rgba(56,189,248,.08)}
+    summary{
+      cursor:pointer;
+      font-weight: 950;
+      letter-spacing:.2px;
+      list-style:none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    summary::-webkit-details-marker{display:none;}
+    .chev{opacity:.75; transition:.2s ease;}
+    details[open] .chev{transform: rotate(180deg); opacity:1;}
+    details p{margin-top: 10px; color:var(--muted); line-height:1.7; font-weight:700; font-size:13px;}
+
+    /* Contact */
+    .contact{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items:start;
+    }
+    @media (max-width: 900px){.contact{grid-template-columns:1fr;}}
+
+    .field{
+      display:flex; flex-direction:column; gap:8px;
+    }
+
+    label{font-size:13px; color: var(--muted2); font-weight:900;}
+    input, textarea{
+      width:100%;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.92);
+      outline:none;
+      transition:.2s ease;
+      font-weight:800;
+    }
+    input:focus, textarea:focus{
+      border-color: rgba(56,189,248,.55);
+      box-shadow: 0 0 0 3px rgba(56,189,248,.18);
+    }
+
+    textarea{min-height: 120px; resize: vertical;}
+
+    .footer{
+      padding: 26px 0 42px;
+      color: var(--muted2);
+      font-weight:800;
+      font-size: 13px;
+      text-align:center;
+    }
+
+    /* Motion */
+    .reveal{opacity:0; transform: translateY(10px); transition: .55s ease;}
+    .reveal.on{opacity:1; transform: translateY(0)}
+
+    /* Mobile */
+    @media (max-width:600px){
+      .cursor-light{display:none;}
+      .video-bg{display:none;}
+      .grid{opacity:.25;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="cursor-light" id="light"></div>
+
+  <div class="grid"></div>
+
+  <video class="video-bg" autoplay muted loop playsinline>
+    <source src="https://cdn.coverr.co/videos/coverr-shopping-in-a-mall-5176/1080p.mp4" type="video/mp4" />
+  </video>
+
+  <header>
+    <div class="container topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <h1>
+          Online do'kon
+          <span>Ultra zamonaviy premium do‘kon</span>
+        </h1>
+      </div>
+
+      <nav>
+        <a href="#home">Home</a>
+        <a href="#collections">Kolleksiyalar</a>
+        <a href="#products">Mahsulotlar</a>
+        <a href="#reviews">Sharhlar</a>
+        <a href="#faq">FAQ</a>
+        <a class="nav-cta" href="#contact">Bog‘lanish</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="home" class="hero">
+    <div class="container hero-grid">
+      <div class="hero-card reveal">
+        <div class="hero-inner">
+          <div class="pill">
+            <span>⚡ Tez o‘qish</span>
+            <span>•</span>
+            <span><b>Premium</b> dizayn</span>
+          </div>
+
+          <h2>
+            Online do'kon bilan
+            <span style="color:rgba(220,252,255,.98); text-shadow:0 0 25px rgba(56,189,248,.35)">o‘zbek onlayn jurnal</span>
+          </h2>
+          <p>
+            Bu sayt demo ko‘rinishda: maqola kartalari, neon-stil, animatsiyalar va zamonaviy UI bilan. 
+            Siz xohlagancha maqola nomi/rasm hamda “o‘qish” matnlarini o‘zgartirasiz.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#products">
+              📰 Maqolalarni ko‘rish
+            </a>
+            <a class="btn btn-ghost" href="#contact">
+              ✨ Tahririyatga yozish
+            </a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat">
+              <b>24/7</b>
+              <span>mijozga xizmat</span>
+            </div>
+            <div class="stat">
+              <b>3-5 kun</b>
+              <span>yetkazib berish</span>
+            </div>
+            <div class="stat">
+              <b>Premium</b>
+              <span>zamonaviy dizayn</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="side-card reveal">
+          <h3>🔥 Tez o‘qish</h3>
+          <p>Eng ko‘p o‘qiladigan bo‘limlar. Har biriga bosib kiring.</p>
+          <div class="quick">
+            <div class="qitem">
+              <div class="qdot">A</div>
+              <div class="qtext"><b>Moda</b><span>uslub & aksessuar</span></div>
+            </div>
+            <div class="qitem">
+              <div class="qdot" style="background:linear-gradient(135deg, rgba(34,197,94,.85), rgba(56,189,248,.65));">B</div>
+              <div class="qtext"><b>Texnika</b><span>gadjetlar</span></div>
+            </div>
+            <div class="qitem">
+              <div class="qdot" style="background:linear-gradient(135deg, rgba(251,113,133,.85), rgba(167,139,250,.65));">C</div>
+              <div class="qtext"><b>Uy</b><span>komfort va dekor</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-card reveal" id="collections">
+          <h3>✨ Kolleksiyalar</h3>
+          <p>Neon glow + glassmorphism effektlari.</p>
+          <div class="hero-actions" style="margin-top:12px">
+            <a class="mini-btn" href="#products">Yangi</a>
+            <a class="mini-btn" href="#products" style="border-color:rgba(167,139,250,.35); background:rgba(167,139,250,.10)">Top</a>
+            <a class="mini-btn mini-buy" href="#products">Chegirma</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section>
+      <div class="container">
+        <div class="section-title reveal">
+          <div>
+            <h3>📰 Maqolalar</h3>
+            <p>Neon kartalar — bosganda o‘qish sahifasiga o‘tish (demo)</p>
+          </div>
+          <p id="cartHint">Tip: “O‘qish” tugmasi demo.</p>
+        </div>
+
+        <div id="products" class="cards-grid">
+          <article class="card col-4 reveal">
+            <div class="thumb">
+              <span class="badge">Top pick</span>
+              <img alt="Mahsulot" src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80" />
+            </div>
+            <h4>Neon Jacket</h4>
+            <div class="price">220 000 so‘m</div>
+            <div class="meta">Yengil • Premium material • Zamonaviy dizayn</div>
+            <div class="card-actions">
+              <a class="mini-btn" href="#contact">Tafsilot</a>
+              <a class="mini-btn mini-buy" href="#contact">Sotib olish</a>
+            </div>
+          </article>
+
+          <article class="card col-4 reveal">
+            <div class="thumb">
+              <span class="badge" style="border-color:rgba(34,197,94,.35); background:rgba(34,197,94,.14);">New</span>
+              <img alt="Mahsulot" src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=1200&q=80" />
+            </div>
+            <h4>Smart Watch Pro</h4>
+            <div class="price">310 000 so‘m</div>
+            <div class="meta">24/7 tracking • Tez zaryad • OLED</div>
+            <div class="card-actions">
+              <a class="mini-btn" href="#contact">Tafsilot</a>
+              <a class="mini-btn mini-buy" href="#contact">Sotib olish</a>
+            </div>
+          </article>
+
+          <article class="card col-4 reveal">
+            <div class="thumb">
+              <span class="badge" style="border-color:rgba(251,113,133,.35); background:rgba(251,113,133,.14);">Hot</span>
+              <img alt="Mahsulot" src="data:image/jpeg;base64,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" />
+            </div>
+            <h4>Aroma Diffuser</h4>
+            <div class="price">95 000 so‘m</div>
+            <div class="meta">Uy uchun • Sleep rejim • 7 rangli glow</div>
+            <div class="card-actions">
+              <a class="mini-btn" href="#contact">Tafsilot</a>
+              <a class="mini-btn mini-buy" href="#contact">Sotib olish</a>
+            </div>
+          </article>
+
+          <article class="card col-4 reveal">
+            <div class="thumb">
+              <span class="badge" style="border-color:rgba(167,139,250,.35); background:rgba(167,139,250,.14);">Combo</span>
+              <img alt="Mahsulot" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80" />
+            </div>
+            <h4>Wireless Earbuds</h4>
+            <div class="price">180 000 so‘m</div>
+            <div class="meta">Bass • Touch boshqaruv • Qulay ergonomika</div>
+            <div class="card-actions">
+              <a class="mini-btn" href="#contact">Tafsilot</a>
+              <a class="mini-btn mini-buy" href="#contact">Sotib olish</a>
+            </div>
+          </article>
+
+          <article class="card col-4 reveal">
+            <div class="thumb">
+              <span class="badge">Limited</span>
+              <img alt="Mahsulot" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEBAQEhISERAWEhISFRIWFRIXFRUXFREWGBUVFxcYHyggGBolGxUWLTEhJSorLjAuGR81RDMtNygtLi0BCgoKDg0OFQ8QFSsfHx8tMC01KystLS8xLSsrLSstKys3LSsuLS0tLS0rLTUtNy0tKy0rLS0tLSstNy0tNSstLf/AABEIALcBEwMBIgACEQEDEQH/xAAcAAEAAQUBAQAAAAAAAAAAAAAAAwIEBgcIBQH/xABFEAACAgEBBAgBBwgIBwEAAAABAgADEQQFEiExBgcTQVFhcYGRIjJSgqGx0SNCU2JykrLBFBUkoqPS4fAWMzRDRFTCCP/EABgBAQEBAQEAAAAAAAAAAAAAAAABAgME/8QAIxEBAAICAQMEAwAAAAAAAAAAAAECAxExBBIhUWFx4RNBQv/aAAwDAQACEQMRAD8A3VERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERA1F1vdILBrtNoq9VbpdyrtyaltdnsdiEXdrIJwqMfDjMV1nWFZXT2Qu11l43il7/kCuQAFdQfymOPzgZ6XWNax25q6lW35WkoU21LmyndXf3hywDyPEc5hG3toAULS112qZmS6uy2tq+zr3WGF3iS29kcRw4QNudTfTa/Wdtp9UzXWqXsS3CDCL2alGCgfnMSD38fCbQmkv/zlojva+88gtNQ9WZ3b7lm7YCIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiBzz1i2b219pU2C4V22aZEsrXeZXq0iFVKDi64ckqJhO29cjJRVWbLK6w+LrBhn3iuQoycIN3gPMzYHTPVOm19of2VtQtWopvDCzcKk6SoABcHfO6Dw58JgPSFk7LSCuu6upa3KdqULMGuLEjd5jjzIGYG8+ofQ7my2t77tRa4/ZQLUPtRvjNjzwOgWz/6PszQ0kYYaetmH6zjff+8xnvwEREBINZq66ka22xKq14s7sFUepPASeYd1q7KN2g7RTVvaW6vWbl2OxsFWd6uzPAghjwPM4HDOYGR7L2zp9SGOnvpvC8G7OxH3fXdPCX05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" />
+            </div>
+            <h4>Luxury Sneakers</h4>
+            <div class="price">260 000 so‘m</div>
+            <div class="meta">Kundalik uchun • Yengil • Anti-slip taglik</div>
+            <div class="card-actions">
+              <a class="mini-btn" href="#contact">Tafsilot</a>
+              <a class="mini-btn mini-buy" href="#contact">Sotib olish</a>
+            </div>
+          </article>
+
+          <article class="card col-4 reveal">
+            <div class="thumb">
+              <span class="badge" style="border-color:rgba(34,197,94,.35); background:rgba(34,197,94,.14);">Sale</span>
+              <img alt="Mahsulot" src="data:image/jpeg;base64,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" />
+            </div>
+            <h4>Minimal Desk Lamp</h4>
+            <div class="price">72 000 so‘m</div>
+            <div class="meta">Ko‘zga mos nur • Dimmer • Premium korpus</div>
+            <div class="card-actions">
+              <a class="mini-btn" href="#contact">Tafsilot</a>
+              <a class="mini-btn mini-buy" href="#contact">Sotib olish</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="reviews">
+      <div class="container">
+        <div class="section-title reveal">
+          <div>
+            <h3>⭐ Mijozlar sharhlari</h3>
+            <p>Haqiqiy emas — demo, dizayn uchun</p>
+          </div>
+          <p class="reveal" style="text-align:right">Glass + neon effektlar</p>
+        </div>
+
+        <div class="cards-grid">
+          <article class="card col-4 review reveal">
+            <div class="stars">★★★★★</div>
+            <h4 style="margin-top:10px">Super servis</h4>
+            <div class="meta">“Tez javob berishdi, buyurtma tez keldi. UI ham zo‘r!”</div>
+            <div class="card-actions">
+              <span class="mini-btn" style="cursor:default">— Ali</span>
+            </div>
+          </article>
+
+          <article class="card col-4 review reveal">
+            <div class="stars">★★★★★</div>
+            <h4 style="margin-top:10px">Design top</h4>
+            <div class="meta">“Animatsiya, ranglar — juda zamonaviy ko‘rinadi. Zo‘r.”</div>
+            <div class="card-actions">
+              <span class="mini-btn" style="cursor:default">— Diyor</span>
+            </div>
+          </article>
+
+          <article class="card col-4 review reveal">
+            <div class="stars">★★★★★</div>
+            <h4 style="margin-top:10px">Sifat yaxshi</h4>
+            <div class="meta">“Mahsulotlar rasmga mos, materiallar ham yoqdi.”</div>
+            <div class="card-actions">
+              <span class="mini-btn" style="cursor:default">— Madina</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="container">
+        <div class="section-title reveal">
+          <div>
+            <h3>❓ FAQ</h3>
+            <p>Tez javoblar (demo)</p>
+          </div>
+          <p>Kerak bo‘lsa matnlarni o‘zgartirasiz</p>
+        </div>
+
+        <div class="cards-grid">
+          <div class="col-6 reveal" style="display:flex; flex-direction:column; gap:12px">
+            <details open>
+              <summary>
+                Buyurtma qanday qilinadi?
+                <span class="chev">⌄</span>
+              </summary>
+              <p>Mahsulot kartasidagi “Sotib olish”ga bosing — kontakt bo‘limida sizga yo‘l ko‘rsatamiz (demo).</p>
+            </details>
+
+            <details>
+              <summary>
+                To‘lov usuli nima?
+                <span class="chev">⌄</span>
+              </summary>
+              <p>Bu demo: lekin xohlasangiz WebMoney/uzcard/Click kabi to‘lov sahifasini ulab beraman.</p>
+            </details>
+          </div>
+
+          <div class="col-6 reveal" style="display:flex; flex-direction:column; gap:12px">
+            <details>
+              <summary>
+                Yetkazib berish qancha vaqt oladi?
+                <span class="chev">⌄</span>
+              </summary>
+              <p>Odatda 3–5 kun (demo). Hududga qarab farq qilishi mumkin.</p>
+            </details>
+
+            <details>
+              <summary>
+                Qaytarish/Almashtirish bormi?
+                <span class="chev">⌄</span>
+              </summary>
+              <p>Ha. Sifat va shartga qarab. Aniq qoidalarni matnga yozib beramiz.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="container">
+        <div class="section-title reveal">
+          <div>
+            <h3>📩 Bog‘lanish</h3>
+            <p>Form demo — lokal HTML bo‘yicha ishlaydi</p>
+          </div>
+          <p>Raqamni ham o‘zgartirsa bo‘ladi</p>
+        </div>
+
+        <div class="contact">
+          <div class="card reveal" style="min-height:unset">
+            <form onsubmit="event.preventDefault(); toast('Xabar qabul qilindi (demo)!'); this.reset();" style="display:flex; flex-direction:column; gap:12px">
+              <div class="field">
+                <label>Ismingiz</label>
+                <input required placeholder="Masalan: Aziza" />
+              </div>
+
+              <div class="field">
+                <label>Telefon raqam</label>
+                <input required placeholder="+998 __ ___ __ __" inputmode="tel" />
+              </div>
+
+              <div class="field">
+                <label>Xabar</label>
+                <textarea required placeholder="Qaysi mahsulotni xohlaysiz? (nomi, soni)" ></textarea>
+              </div>
+
+              <button class="btn btn-primary" type="submit" style="width:fit-content">
+                🚀 Yuborish
+              </button>
+            </form>
+          </div>
+
+          <div class="side">
+            <div class="side-card reveal" style="padding: 18px">
+              <h3>Tez aloqa</h3>
+              <p>Quyidagilardan birini ishlating (demo havolalar).</p>
+
+              <div class="quick" style="margin-top:14px">
+                <a class="qitem" href="tel:+998901234567" style="text-decoration:none; color:inherit">
+                  <div class="qdot" style="background:linear-gradient(135deg, rgba(56,189,248,.85), rgba(251,113,133,.65));">☎</div>
+                  <div class="qtext"><b>Telefon</b><span>+998 90 123 45 67</span></div>
+                </a>
+
+                <a class="qitem" href="#" onclick="toast('Telegram linki qo‘shilishi kerak (demo)'); return false;" style="text-decoration:none; color:inherit">
+                  <div class="qdot" style="background:linear-gradient(135deg, rgba(34,197,94,.85), rgba(56,189,248,.65));">✈</div>
+                  <div class="qtext"><b>Telegram</b><span>@Online do'kon_shop</span></div>
+                </a>
+
+                <a class="qitem" href="#" onclick="toast('WhatsApp linki qo‘shilishi kerak (demo)'); return false;" style="text-decoration:none; color:inherit">
+                  <div class="qdot" style="background:linear-gradient(135deg, rgba(167,139,250,.85), rgba(251,113,133,.65));">🟢</div>
+                  <div class="qtext"><b>WhatsApp</b><span>Chat ochish</span></div>
+                </a>
+              </div>
+            </div>
+
+            <div class="side-card reveal">
+              <h3>To‘lov (demo)</h3>
+              <p>To‘lov sahifasi sizda bo‘lsa, “shop.html” template’iga ulab beramiz.</p>
+              <div class="hero-actions" style="margin-top:12px">
+                <a class="mini-btn" href="templates/shop.html">To‘lov sahifasi</a>
+                <a class="mini-btn mini-buy" href="templates/shop.html">Order qilish</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      © <span id="year"></span> Online do'kon. Neon glassmorphism demo.
+    </div>
+  </main>
+
+  <script>
+    // Cursor light
+    const light = document.getElementById('light');
+    if (light) {
+      document.addEventListener('mousemove', e => {
+        light.style.left = e.clientX + 'px';
+        light.style.top = e.clientY + 'px';
+      });
+    }
+
+    // Reveal on scroll
+    const obs = new IntersectionObserver((entries)=>{
+      for (const entry of entries){
+        if(entry.isIntersecting){
+          entry.target.classList.add('on');
+          obs.unobserve(entry.target);
+        }
+      }
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Tiny toast (demo)
+    const toast = (msg) => {
+      let t = document.getElementById('toast');
+      if(!t){
+        t = document.createElement('div');
+        t.id = 'toast';
+        t.style.cssText = `position:fixed; left:50%; top:18px; transform:translateX(-50%); z-index:9999; padding:12px 14px; border-radius:16px; border:1px solid rgba(255,255,255,.14); background: rgba(2,6,23,.72); backdrop-filter: blur(16px); color: rgba(255,255,255,.92); font-weight:900; box-shadow: 0 20px 70px rgba(0,0,0,.35); opacity:0; transition: .2s ease; max-width: 92vw; text-align:center;`;
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      t.style.opacity = '1';
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(()=>{ t.style.opacity='0'; }, 2200);
+    }
+  </script>
+</body>
+</html>
+
